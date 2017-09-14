@@ -15,12 +15,12 @@ done
 # wait until database server is started and DB is initialized
 
 mysql_command="mysql"
-dbhost="$(grep database_name app/config/parameters.yml | perl -pe 's|^.*database_host\s?:\s*||g')"
+dbhost="$(grep database_host app/config/parameters.yml | perl -pe 's|^.*database_host\s?:\s*||g')"
 dbname="$(grep database_name app/config/parameters.yml | perl -pe 's|^.*database_name\s?:\s*||g')"
-dbuser="$(grep database_name app/config/parameters.yml | perl -pe 's|^.*database_user\s?:\s*||g')"
-dbpass="$(grep database_name app/config/parameters.yml | perl -pe 's|^.*database_pass\s?:\s*||g')"
+dbuser="$(grep database_user app/config/parameters.yml | perl -pe 's|^.*database_user\s?:\s*||g')"
+dbpass="$(grep database_pass app/config/parameters.yml | perl -pe 's|^.*database_pass\s?:\s*||g')"
 
-try_count=0
+try=0
 ok=0
 
 if [ "$dbname" ]; then
@@ -29,7 +29,7 @@ if [ "$dbname" ]; then
     [[ -z "$dbpass" || "$dbpass" = "null" ]] || mysql_command="$mysql_command -p$dbpass"
 
     until $mysql_command -e "USE $dbname" && ok=1; do
-        [ $((++try_count)) -gt 30 ] && break
+        [ $((++try)) -gt 30 ] && break
         sleep 1
     done
 fi
