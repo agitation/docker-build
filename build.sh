@@ -23,6 +23,7 @@ msg "UPDATING REPOSITORY"
 git reset --hard
 git clean -f
 git pull
+head_version=$(git rev-parse HEAD) # we need this later
 
 ### ---------------------------------------------------------------------------
 
@@ -39,7 +40,7 @@ composer install --no-dev --optimize-autoloader --classmap-authoritative --no-in
 ### ---------------------------------------------------------------------------
 
 msg "INSTALLING ASSETS"
-app/console assetic:dump --force
+app/console assetic:dump
 app/console assets:install
 
 ### ---------------------------------------------------------------------------
@@ -47,4 +48,4 @@ app/console assets:install
 msg "CREATING DOCKER IMAGE"
 cd $work_dir
 [ "$1" ] && tag_param="-t $1"
-docker build $tag_param .
+docker build --build-arg version=$head_version $tag_param .
